@@ -1,11 +1,13 @@
 # Mini Messageboard
 
-A simple, elegant message board application built with Node.js and Express. Users can view messages and post new ones in a beautifully styled interface.
+A simple, elegant message board application built with Node.js, Express, and PostgreSQL. Users can view messages and post new ones in a beautifully styled interface with persistent database storage.
 
 ## Features
 
 - 📝 **Post Messages**: Create new messages with your name and content
 - 👀 **View Messages**: Browse all posted messages in a clean, card-based layout
+- 🗄️ **Database Storage**: Messages are stored persistently in PostgreSQL
+- 🌱 **Seed Data**: Pre-populated with sample messages for testing
 - 🔍 **Message Details**: Click on any message to reveal detailed information
 - 📱 **Responsive Design**: Works seamlessly on desktop and mobile devices
 - ✨ **Modern UI**: Beautiful gradient backgrounds with glassmorphism effects
@@ -25,6 +27,7 @@ The app features a modern purple gradient design with:
 
 - Node.js (version 14 or higher)
 - npm (comes with Node.js)
+- PostgreSQL database
 
 ### Installation
 
@@ -32,22 +35,46 @@ The app features a modern purple gradient design with:
 2. Navigate to the project directory:
 
    ```bash
-   cd Node
+   cd Mini-Messageboard
    ```
 
 3. Install dependencies:
 
    ```bash
-   npm install express ejs
+   npm install express ejs pg dotenv
    ```
 
-4. Start the server:
+4. Set up your database:
+
+   Create a `.env` file in the root directory with your PostgreSQL credentials:
+
+   ```env
+   DB_HOST=localhost
+   DB_USER=your_username
+   DB_PASSWORD=your_password
+   DB_NAME=your_database_name
+   DB_PORT=5432
+   ```
+
+5. Initialize the database with seed data:
+
+   ```bash
+   node db/seed.js
+   ```
+
+   This will:
+
+   - Create the messages table if it doesn't exist
+   - Clear any existing messages
+   - Insert 8 sample messages for testing
+
+6. Start the server:
 
    ```bash
    node app.js
    ```
 
-5. Open your browser and visit: `http://localhost:3000`
+7. Open your browser and visit: `http://localhost:3000`
 
 ## Usage
 
@@ -72,6 +99,11 @@ The app features a modern purple gradient design with:
 ```
 ├── app.js              # Main application server
 ├── README.md           # This file
+├── .env                # Environment variables (create this)
+├── db/
+│   ├── pool.js         # Database connection pool
+│   ├── queries.js      # Database query functions
+│   └── seed.js         # Database seeding script
 ├── public/
 │   └── styles.css      # CSS styling
 └── views/
@@ -83,10 +115,47 @@ The app features a modern purple gradient design with:
         └── footer.ejs  # Footer component
 ```
 
+## Database Schema
+
+The application uses a PostgreSQL database with the following table structure:
+
+```sql
+CREATE TABLE messages (
+  id SERIAL PRIMARY KEY,
+  user_name VARCHAR(255) NOT NULL,
+  text TEXT NOT NULL,
+  added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## Database Management
+
+### Seeding the Database
+
+To populate the database with sample data:
+
+```bash
+node db/seed.js
+```
+
+This script will:
+
+- Create the messages table if it doesn't exist
+- Clear existing messages
+- Insert 8 sample messages
+- Display confirmation and count of inserted messages
+
+### Resetting the Database
+
+To start fresh with new seed data, simply run the seed script again - it automatically clears existing data before inserting new messages.
+
 ## Technologies Used
 
 - **Node.js** - Server runtime
 - **Express.js** - Web framework
+- **PostgreSQL** - Database for persistent storage
+- **pg** - PostgreSQL client for Node.js
+- **dotenv** - Environment variable management
 - **EJS** - Templating engine
 - **CSS3** - Styling with modern features like gradients and glassmorphism
 - **JavaScript** - Client-side interactivity
@@ -98,11 +167,21 @@ The app features a modern purple gradient design with:
 - Modify `public/styles.css` to change colors, fonts, or layout
 - The current theme uses a purple gradient with glassmorphism effects
 
+### Database
+
+- Messages are now stored persistently in PostgreSQL
+- Modify `db/queries.js` to add new database operations
+- Update `db/seed.js` to change the sample data
+
 ### Adding Features
 
-- Messages are stored in memory (resets on server restart)
-- Consider adding a database for persistent storage
-- Could add features like message editing, deletion, or user authentication
+Consider adding:
+
+- Message editing and deletion
+- User authentication
+- Message categories or tags
+- Search functionality
+- Pagination for large numbers of messages
 
 ## Development
 

@@ -2,7 +2,7 @@
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-
+import * as db from "./db/queries.js";
 const messages = [
   {
     text: "Hi there!",
@@ -27,17 +27,18 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (req, res) => {
-  res.render("pages/index", { title: "Mini Messageboard", messages: messages });
+app.get("/", async (req, res) => {
+  const data = await db.getMessages();
+  res.render("pages/index", { title: "Mini Messageboard", messages: data });
 });
 
 app.get("/new", (req, res) => {
   res.render("pages/new");
 });
 
-app.post("/new", (req, res) => {
+app.post("/new", async (req, res) => {
   let { author, message } = req.body;
-  messages.push({ text: message, user: author, added: new Date() });
+  const data = await db.insertMessage(author, message);
   res.redirect("/");
 });
 const port = 3000;
