@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <%- include('../partials/navbar') %>
+
+    <div class="container">
+      <h1 class="main-title"><%= title %></h1>
+
+      <% if (messages && messages.length > 0) { %>
+      <div class="messages">
+        <% messages.forEach((message, index) => { %>
+        <div
+          class="message"
+          onclick="toggleMessageDetails('<%= index %>')"
+          data-index="<%= index %>"
+        >
+          <div class="message-content"><%= message.text %></div>
+          <div class="message-meta">
+            <span class="message-author">By <%= message.user %></span>
+            <span class="message-date"
+              ><%= message.added.toLocaleDateString() %> at <%=
+              message.added.toLocaleTimeString() %></span
+            >
+          </div>
+          <div class="message-details" id="details-<%= index %>">
+            <h4>Message Details:</h4>
+            <p><strong>Full Message:</strong> <%= message.text %></p>
+            <p><strong>Author:</strong> <%= message.user %></p>
+            <p>
+              <strong>Posted on:</strong> <%=
+              message.added.toLocaleDateString('en-US', { weekday: 'long', year:
+              'numeric', month: 'long', day: 'numeric' }) %>
+            </p>
+            <p>
+              <strong>Time:</strong> <%=
+              message.added.toLocaleTimeString('en-US', { hour: '2-digit',
+              minute: '2-digit', second: '2-digit' }) %>
+            </p>
+            <p>
+              <strong>Message Length:</strong> <%= message.text.length %>
+              characters
+            </p>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+      <% } else { %>
+      <div class="no-messages">
+        <p>
+          No messages yet.
+          <a href="/new" style="color: white">Create the first one!</a>
+        </p>
+      </div>
+      <% } %>
+    </div>
+
+    <script>
+      function toggleMessageDetails(index) {
+        const details = document.getElementById("details-" + index);
+        details.classList.toggle("show");
+      }
+    </script>
+
+    <%- include('../partials/footer') %>
+  </body>
+</html>
